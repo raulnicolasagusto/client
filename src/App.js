@@ -1,6 +1,7 @@
 import './App.css';
 import { useState } from 'react';
 import Axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';  
 
 function App() {
   const [nombre, setNombre] = useState('');
@@ -8,6 +9,8 @@ function App() {
   const [pais, setPais] = useState('');
   const [cargo, setCargo] = useState('');
   const [anios, setAnios] = useState(0);
+
+  const [empleadosList, setEmpleadosList] = useState([]);
 
   const add = () => {
     Axios.post('http://localhost:3001/create', {
@@ -25,8 +28,28 @@ function App() {
       });
   };
 
+  const getEmpleados = () => {
+    Axios.get('http://localhost:3001/empleados')
+      .then((response) => {
+        setEmpleadosList(response.data);
+        
+      })
+      .catch((error) => {
+        console.error('Error al MOSTRAR empleados:', error);
+      });
+  };
+getEmpleados();
+
   return (
-    <div className="App">
+   <div className="container"> 
+
+    
+    <div className="card text-center">
+      <div className="card-header">
+        Featured
+      </div>
+      <div className="card-body">
+      <div className="App">
       <div className="datos">
         <label>
           Nombre:
@@ -63,11 +86,22 @@ function App() {
             type="number"
           />
         </label>
-        <button onClick={add} className="">
-          Registrar
-        </button>
+        
       </div>
     </div>
+      </div>
+      <div className="card-footer text-body-secondary">
+      <button onClick={add} className="btn btn-success">
+          Registrar
+        </button>
+            {empleadosList.map((val, key) => {
+              return <div>{val.nombre}</div>
+            })
+           }
+      </div>
+    </div>
+
+  </div> 
   );
 }
 
